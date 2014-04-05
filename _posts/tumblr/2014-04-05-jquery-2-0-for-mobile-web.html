@@ -1,0 +1,25 @@
+---
+layout: post
+title: jQuery 2.0 for mobile web
+date: '2014-04-05T11:31:00-07:00'
+tags:
+- front-end development
+- meetup
+- jquery
+- javascript
+- grunt
+tumblr_url: http://www.derekpetey.com/post/81798901969/jquery-2-0-for-mobile-web
+---
+<a href="http://making.meetup.com/post/66105751904/jquery-2-0-for-mobile-web">jQuery 2.0 for mobile web</a><br/><p>Reblogged from <a href="http://making.meetup.com/post/66105751904/jquery-2-0-for-mobile-web" target="_blank">Meetup</a>:</p>
+
+<blockquote>
+  <p>No sooner than we started looking closer at zepto (and having some doubts), jquery 2.0 was on the horizon and then BOOM! it was released. That’s when we decided to switch …and it’s proved itself to be the right decision for us. As a side note, Mobilism.nl also happened soon after we converted - John Cleveley from the BBC gave an amazing talk that highlighted their use of jquery 2.0. Needless to say we felt more validated in our decision.</p>
+  
+  <p>But what about the size? jquery 2.0 has indeed dropped some weight from previous 1.* releases. It was about 29k compressed and gzipped at the time of its release (it’s now at 2.1.0). The awesome feature is that it supports custom builds, which are very easy to do from the command line.</p>
+  
+  <p>This is what our build command looks like:</p>
+  
+  <p><code>grunt -sizzle,-wrap,-event-alias,-effects,-dimensions,-deprecated</code></p>
+  
+  <p>And it gives us a library that’s 20k gzipped.  Of course, it’s not as small as xui.js was. But it’s also not that big. And we ansychronously load it. We think the extra kb is a good tradeoff for ease of development and code sharing.</p>
+</blockquote>

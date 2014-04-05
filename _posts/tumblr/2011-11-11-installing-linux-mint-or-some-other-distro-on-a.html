@@ -1,0 +1,80 @@
+---
+layout: post
+title: Installing Linux Mint (or some other distro) on a Macbook Pro
+date: '2011-11-11T15:58:00-08:00'
+tags:
+- linux
+- mac
+- apple
+- windows
+- mint
+- tech
+- guide
+- to-do
+- how-to
+- i hope this helps somebody
+tumblr_url: http://www.derekpetey.com/post/12662847155/installing-linux-mint-or-some-other-distro-on-a
+---
+<p>For posterity&#8217;s sake (and in case this can be useful to anyone else looking to undertake this project), I wanted to post a quick and easy guide to installing Linux (Mint 11, in my case) on a MacBook Pro alongside Mac OS X 10.6.8 (Snow Leopard) and Windows 7 (or Vista or XP, I suppose). There are a lot of resources out there, but I didn&#8217;t find any that combined comprehensive information about my particular case and ease of understanding for a Linux novice. Hopefully I can break it down nicely enough.</p>
+
+<p>Just to make sure that I give credit where it&#8217;s due, here are the best guides that I found for making this process much easier:</p>
+<ul><li>The <a href="http://wiki.onmac.net/index.php/Triple_Boot_via_BootCamp" target="_blank">wiki at onmac.net</a>. This one is useful because it&#8217;s written by expert Mac users who know the technical side of what&#8217;s going on at each step. If you feel completely confused about something going wrong, but know your way around a hard drive partition, this is the most likely place to find answers to your questions.</li>
+<li>This <a href="https://help.ubuntu.com/community/MacBook%20Aluminum" target="_blank">Ubuntu wiki</a> contains good background on the Linux side of setting up an Ubuntu MBP.</li>
+<li>At Mac Life, there is this broader <a href="http://www.maclife.com/article/howtos/install_linux_your_mac" target="_blank">guide to installing Linux Mint</a> on a MBP. It&#8217;s slightly outdated because the author was installing Mint 7, but still presents an easy-to-follow sketch of installing Mint. Plus, it has photos. When I decided to abandon Mandriva, the images of Mint&#8217;s GUI are what made me go in that direction.</li>
+<li>You&#8217;ll understand why <a href="http://refit.sourceforge.net/doc/c2s2_startos.html" target="_blank">this page from rEFIt</a> is useful in just a moment.</li>
+<li>Lastly, here are <a href="http://www.techsupportalert.com/content/tips-and-tricks-linux-mint-after-installation.htm" target="_blank">tips and tricks for Linux Mint after installation</a>. After all, what&#8217;s the point in having the beautiful, open-source, fourth-most-popular operating system if you don&#8217;t know what to do with it?</li>
+</ul><p>Alright, let&#8217;s get started now. I assume that you have Mac OS X installed and running and that you have backed up everything. Speaking of which, if you haven&#8217;t done that, you should right now and regularly from now on. External hard drives are cheap, and Time Machine makes it far too easy not to do so.</p>
+
+<p>Here&#8217;s the summary of what we&#8217;ll do:</p>
+<ol><li>Use Boot Camp Assistant to create a Windows partition. Follow the prompts to install Windows.</li>
+<li>Reboot in Mac and install rEFIt.</li>
+<li>Download your Linux distro disk image and burn the .iso file to a DVD.</li>
+<li>Create a dummy Linux partition from your Mac partition.</li>
+<li>Restart your computer. Boot from your Linux DVD by holding &#8216;c&#8217; at startup.</li>
+<li>Erase the dummy Linux partition created in Mac.</li>
+<li>Create a small partition and format it as Linux swap space.</li>
+<li>Create your Linux boot partition, set it as &#8216;/&#8217;, and format it as ext3 or ext4.</li>
+<li>Install Linux to your boot partition. (<a href="#careful" target="_blank">Careful</a>!)</li>
+<li>Exit and restart from Linux.</li>
+<li>Use the Partition Inspector tool on the rEFIt menu to sync your partition tables.</li>
+<li>Boot into Mac to make sure everything works well.</li>
+<li>Restart and boot into Windows to do the same. Install updates if you didn&#8217;t already.</li>
+<li>Restart and boot into Linux. Plug in your ethernet cable and install drivers.</li>
+<li>Enjoy your triple-boot!</li>
+</ol><p>Now, you have a bit of homework to do before you get started. Think about how much space you have on your hard drive and how much you want to devote to each operating system. As far as the OS themselves go, <a href="http://www.apple.com/macosx/specs.html" target="_blank">Mac OS X Lion requires 7&#160;GB</a>, <a href="http://windows.microsoft.com/en-US/windows7/products/system-requirements" target="_blank">Windows 7 needs 20&#160;GB</a> (for the 64-bit version, which is best for your Intel Mac), and <a href="http://en.wikipedia.org/wiki/Linux_Mint#System_requirements" target="_blank">Mint takes 5&#160;GB</a> (if you want to install a different distribution, then be sure to look that up). The rule of thumb says that it&#8217;s a good idea to have at least twice the minimum requirement, for what it&#8217;s worth. In my case, I divided my 160&#160;GB hard drive into 80&#160;GB for Mac, 35&#160;GB for Mint, and 40&#160;GB for Windows. It&#8217;s completely up to you. Write these numbers down and set them aside.</p>
+
+<p>With that squared away, you can install Windows. It&#8217;s the fussiest OS and its hard drive formatting is the least flexible of these three, so it&#8217;s best to get it settled and out of the way. (Plus, in case you&#8217;re setting up XP, it needs to be the last partition on a drive, which means that you have to do this step first.) Fortunately, Apple&#8217;s Boot Camp program provides a fairly polished method for installing Windows. Open the Boot Camp Assistant (under Applications &gt; Utilities) and click through to the partition setup. This is where you divide off the Windows partition of your hard drive, giving it the amount of space that you wrote down earlier. Changing this later is not exactly simple, so be careful. From there, just follow the steps.</p>
+
+<p>When you&#8217;re done installing and updating Windows, restart your computer and boot up in Windows. To do this, hold the &#8216;alt/option&#8217; key as soon as your screen goes black. You will be able to choose between Mac and Windows. Pick the latter. If everything seems alright, restart your computer and boot up in Mac. Once you&#8217;re there, install <a href="http://refit.sourceforge.net/" target="_blank">rEFIt</a>. As with most software on your Mac, you just have to download and save the .dmg file and open it. This will mount the disk image (i.e. open it as a disk, as you would a CD or hard drive) so that you can install the program. There is nothing to customize on the installation, as rEFIt does all the work for you. It will pop up on your second reboot after installation.</p>
+
+<p>&#8212;-</p>
+
+<p>Quick background right here: Intel Macs use EFI, or <a href="http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface" target="_blank">United Extensible Firmware Interface</a>, which is the method that the computer uses for starting/booting up. This replaces BIOS, or <a href="http://en.wikipedia.org/wiki/BIOS" target="_blank">Basic Input/Output System</a>, which Windows computer use. As your computer turns on, these are basically a black box in between your hardware and your operating system. What rEFIt does is stop your computer at the black box stage to give you an option to continue the process in Mac, Linux, Windows, or whatever other operating system you have installed on your Intel Mac. If you choose Mac or Linux, rEFIt lets your computer continue normally. If you choose Windows, rEFIt starts up a tool that pretends to be BIOS.</p>
+
+<p>&#8212;-</p>
+
+<p>Alright, back to it. Now that you have both Mac OS X and Windows working, it&#8217;s time for the fun part: installing Linux. If you have not decided which distribution (or distro) to use, check out some of the resources on making that decision, particularly <a href="http://www.zegeniestudios.net/ldc/" target="_blank">this selection tool</a> and <a href="http://distrowatch.com/dwres.php?resource=major" target="_blank">this list of major distributions</a> with their respective pros and cons. Good choices for newbies are <a href="http://www.ubuntu.com/download/ubuntu/download" target="_blank">Ubuntu</a>, <a href="http://www.linuxmint.com/download.php" target="_blank">Mint</a> (an Ubuntu variant), and <a href="http://mageia.org/en/downloads/" target="_blank">Mageia</a>. You&#8217;ll want to download the 64-bit DVD version of whatever distribution you choose. The file will end in something like x86_64bit.iso (the .iso file type is a disk image similar to .dmg, and your MBP can boot directly from it). When the download completes, put a burnable DVD in the drive. Burn the .iso disk image to the DVD by right-clicking on the file, using Disk Utility, or however you prefer. Just make sure that only the .iso file is burnt to the DVD. Your distribution may include a MD5 file, which is used to confirm that the distribution is complete and should not be burned to the disk (I made this mistake with a Mandriva distro I downloaded; oops!).</p>
+
+<p>Now you need to create what will become your Linux partition. To do this, open Disk Utility (under Applications &gt; Utilities). Click on the header for your internal hard drive (or, if you have multiple, the one that you want to install Linux on).</p>
+
+<img src="http://media.tumblr.com/tumblr_luinoq5tee1qaiq55.png"/><p>From there, click the Partition tab.</p>
+
+<img src="http://media.tumblr.com/tumblr_luinvxGwZV1qaiq55.png"/><p>As you can see, I&#8217;ve numbered all of the clicks for this step. First, you should click on the partition labeled &#8220;Macintosh HD&#8221;. Don&#8217;t do anything with the one labeled &#8220;BOOTCAMP&#8221;. That&#8217;s your Windows partition, and, as I mentioned above, it&#8217;s very fussy. Next, click the (+) sign underneath to create a new partition off of that one. This will be your Linux partition eventually, so type in a helpful name like &#8220;Linux&#8221; in the box to the right. Don&#8217;t worry about the format: you will completely delete this partition when you boot from your Linux disk. Click &#8216;Apply&#8217; and Disk Utility will create the partition.</p>
+
+<p>When it&#8217;s finished, you&#8217;re going to boot from the Linux DVD that you created. To do this, restart your computer and hold down &#8216;C&#8217; when your screen goes black. Keep it depressed until the Linux distro&#8217;s screen appears to ask whether you want to install the OS, operate from the DVD, etc. You won&#8217;t want to install Linux just yet, so pick whatever option lets you run the OS from the disk. Depending on your distro, it will probably take a little bit to load. That&#8217;s normal. The important thing is that you&#8217;re in. Once it does load, go to the menu and open GParted (or whatever your distro&#8217;s partitioning tool is called). You should see four main partitions: EFI, Macintosh HD, your Linux partition, and BOOTCAMP. Confirm which partition is the one you created for Linux, click on it, and erase it. So that you know, it&#8217;s essential to actually erase it. Reformatting the existing partition is not good enough. Doing so will cause Linux to boot up in place of your BootCamp installation. (The reason for this is that your Macintosh HD controls your computer&#8217;s <a href="http://en.wikipedia.org/wiki/Master_boot_record" target="_blank">Master Boot Record</a>, or MBR. The Linux partition that you created in Mac OS X exists within Mac&#8217;s sphere of influence, so to speak. By deleting that partition and starting fresh, you&#8217;re setting up Linux in its own <a href="http://en.wikipedia.org/wiki/Volume_boot_record" target="_blank">Partition Boot Record</a>, or PBR. It can branch out and have its own hipster partition table. &#8230; Sorry.)</p>
+
+<p>Now, with all of that empty space, you will create two separate partitions: one for the Linux Swap area first and one for the Linux boot area second. As far as I can tell, the swap partition should be at least 512&#160;MB (I made mine 1&#160;GB because I like nice, round numbers). Rather than formatting it, you can set it as a Swap (&#8216;Swap&#8217; is an option in the drop-down menu) area when you create it. With the rest of your Linux space, create the main partition that you will install your distro on. Have it use all of the remaining free space, set it as &#8216;/&#8217; (this is an option in the same drop-down menu as &#8216;Swap&#8217;) and format it as ext3 or ext4. (Read about the differences <a href="http://www.thegeekstuff.com/2011/05/ext2-ext3-ext4/" target="_blank">here</a>.) Write down which partition you just created. It will probably be &#8216;/dev/sda3&#8217; if you&#8217;ve been following along, but it&#8217;s worth checking to make sure.</p>
+
+<p>Finally, you can install Linux. Answer the questions that come up until you get to the part about selecting a hard drive partition to install to. You will select your /-formatted partition to install to, as you would expect. There should be another drop-down menu below asking you which hard drive to use (alternatively, it will be under an advanced options menu, so look for that, too).</p>
+
+<a name="careful"><div class="image"><img src="http://www.maclife.com/files/u129772/step7_only.jpg"/><div>Credit: <a href="http://www.maclife.com/article/howtos/install_linux_your_mac?page=0,1" target="_blank">MacLife.com</a></div></div></a>
+
+<p>It may look legit as is, but it isn&#8217;t. (Note: your window will look different from this image because yours will also have your BootCamp partition. If you&#8217;ve been following along, BootCamp will be &#8216;/dev/sda4&#8217;.) Click on this drop-down to bring up your options and you will see why. You actually need to again set which partition you will install to: your /-formatted partition. Be very careful while doing this. Accidentally leaving this option as it is will kill your Mac OS X partition. Clicking on your BOOTCAMP partition will kill your Windows install. When you&#8217;re sure you&#8217;ve got it right, click apply (or save or install or etc.).</p>
+
+<p>Now wait as Linux installs itself. When it&#8217;s done, you will get a prompt telling you that you have to restart Linux before saving any updates, etc. Feel free to play around because you won&#8217;t actually come back to Linux for a short spell. When you&#8217;re ready, go the menu, select exit, and restart.</p>
+
+<p>When your computer restarts, you should see the rEFIt menu for the first time. If all went well, there should be three icons along the first row: that familiar Macintosh apple, the Linux penguin, and the Windows logo. (If not, don&#8217;t panic just yet.) Use your arrow keys to go down to the second row, where you&#8217;ll find the Partition Inspector tool. Hit enter to access it and it will tell you whether your partition tables need to be synced. If so, hit &#8216;y&#8217; to have Partition Inspector resolve the issue. Exit out to the rEFIt main menu again and opt to enter your Mac boot.</p>
+
+<p>Mostly this is just to check in and make sure that everything is fine. Open up Disk Utility, if you like, and take a look at your handiwork in the Partition tab. When everything checks out, restart again. (If your distro didn&#8217;t eject your installation DVD, do that now.) At the rEFIt menu, choose Windows to make sure everything still works. After you do that, restart one more time and select Linux (woo!). Once you&#8217;re in, plug in an ethernet cable and start downloading the drivers for your distro.</p>
+
+<p>And that&#8217;s that. You should be able to take it from there. Enjoy your triple-boot!</p>
