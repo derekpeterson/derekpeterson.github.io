@@ -82,13 +82,12 @@ iframe {
 .blog-title:active {
     background: inherit;
     border: none;
-    color: #333;
     line-height: 1em;
-    -moz-transition: none;
-    -o-transition: none;
+       -moz-transition: none;
+         -o-transition: none;
     -webkit-transition: none;
-    -ms-transition: none;
-    transition: none;
+        -ms-transition: none;
+            transition: none;
 }
 .content {
     background: #fff;
@@ -145,15 +144,18 @@ iframe {
 .notes {
     margin: 18px 0 0;
 }
-.post-tags li {
+.tag-links {
     border: none;
     display: inline;
     list-style-type: none;
     margin: 0;
 }
+.tag-links:hover {
+    border-bottom: 1px solid rgb(0, 120, 180);
+}
 .title {
     font-size: 1.2em;
-    line-height: 1em;
+    line-height: 1.5em;
     margin-bottom: 9px;
 }
 .tag-links,
