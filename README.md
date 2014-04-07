@@ -1,4 +1,4 @@
 derekpeterson.github.io
 =======================
 
-Finally getting my personal site onto GH pages
+My personal site/blog. Standard CC license applies. Attribution is necessary for anything in `/_posts` or `/tumblr_files`.
