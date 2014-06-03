@@ -26,7 +26,7 @@ title: Home
     {% endif %}
     </li>
     <li class="pages">
-        <a href="#">{{ paginator.page }}</a> of <a href="/blog/page{{ paginator.total_pages }}">{{ paginator.total_pages }}</a>
+        {{ paginator.page }} of <a href="/blog/{{ paginator.total_pages }}">{{ paginator.total_pages }}</a>
     </li>
     <li class="next">&nbsp;
     {% if paginator.next_page %}
