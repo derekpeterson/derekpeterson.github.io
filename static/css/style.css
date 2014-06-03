@@ -13,8 +13,7 @@ a {
     padding: .1em;
     text-decoration: none;
 }
-a:link,
-a:visited {
+a:link {
     color: rgb(0, 120, 180);
 }
 a:focus,
