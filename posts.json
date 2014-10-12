@@ -1,0 +1,18 @@
+---
+layout: nil
+---
+{
+    "name": "Derek wanders the Internet",
+    "updated": "{{ site.time }}",
+    "posts": [
+        {% for post in site.posts limit:100 %}
+        {
+            "title": "{{ post.title }}",
+            "url": "https://www.derekpetey.com/blog/{{ post.url }}",
+            "date": "{{ post.date | date_to_xmlschema }}",
+            "id": "https://www.derekpetey.com/blog/{{ post.id }}",
+            "text": "{{ post.content }}"
+        }
+        {% endfor %}
+    ]
+}
