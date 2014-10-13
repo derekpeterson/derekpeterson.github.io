@@ -1,0 +1,26 @@
+{
+  "name": "experiments/react",
+  "version": "0.0.0",
+  "homepage": "https://github.com/derekpeterson/derekpeterson.github.io/experiments/react",
+  "authors": [
+    "Derek Peterson <derekpetey@gmail.com>"
+  ],
+  "description": "Playing with React",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "react": "~0.11.2",
+    "showdown": "~0.3.1"
+  }
+}
