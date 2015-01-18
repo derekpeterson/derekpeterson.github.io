@@ -77,4 +77,7 @@ a:active {
         border: none;
         color: black;
     }
+    .contact-column.right {
+        margin-left: 20px;
+    }
 }
