@@ -12,6 +12,12 @@ section {
     clear: both;
     margin-top: 3em;
 }
+ul {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1em;
+    padding-right: 0;
+}
 li {
     list-style-type: disc;
 }
@@ -51,22 +57,15 @@ a:active {
         float: right;
     }
 }
-@media (max-width: 776px) {
-    ul {
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
-    }
-}
 @media print {
     html {
         color: black;
         font-size: 12px;
     }
     body {
-        margin: 1.5em;
-        width: 90%;
+        margin: 0 auto;
+        padding: 2em;
+        width: 80%;
     }
     section {
         margin-top: 1em;
