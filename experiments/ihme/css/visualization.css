@@ -1,0 +1,37 @@
+html {
+  font-size: 10px;
+}
+.visualization-container {
+  position: relative;
+  font-family: sans-serif;
+  font-size: 1.2rem;
+  padding: 1.5em;
+  text-align: center;
+}
+.visualization-axis path,
+.visualization-axis rect,
+.visualization-axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+.visualization-tooltip {
+  padding: 1em;
+  height: 1.5rem;
+  min-width: 120px;
+  border-radius: 9px;
+  position: absolute;
+  left: -1000px;
+  background-color: #277;
+  color: #eee;
+  pointer-events: none;
+}
+.visualization-action {
+  position: absolute;
+  top: 30px;
+  right: 60px;
+}
+.visualization-action label {
+  display: block;
+  margin-bottom: 1em;
+}
