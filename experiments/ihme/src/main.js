@@ -136,15 +136,6 @@ function buildVisualization (data, book, locs) {
     .attr('class', 'visualization-axis')
     .attr('transform', 'translate(0,' + height + ')')
     .call(xAxis);
-
-  var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient('left');
-
-  viz.append('g')
-    .attr('class', 'visualization-axis')
-    .attr('transform', 'translate(' + padding + ',0)')
-    .call(yAxis);
 }
 
 window.addEventListener('DOMContentLoaded', function () {
