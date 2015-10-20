@@ -48,10 +48,13 @@
 	var d3 = __webpack_require__(32);
 	var q = __webpack_require__(33);
 
+	var REGION_RE = /^R[0-9]{1,2}$/;
+
 	function loadData (url) {
 	  var dfd = q.defer();
-	  d3.csv(url, function (data) {
-	    dfd.resolve(data);
+	  d3.csv(url, function (error, data) {
+	    if (error) return dfd.reject(error);
+	    return dfd.resolve(data);
 	  });
 	  return dfd.promise;
 	}
@@ -59,112 +62,137 @@
 	function cleanData (data) {
 	  return data.map(function (d) {
 	    var clean = _clone(d);
-	    clean.year = +d.year;
-	    clean.mean = +d.mean;
-	    clean.location_id = +d.location_id;
+	    [
+	      'age_end',
+	      'age_group_id',
+	      'age_start',
+	      'location_id',
+	      'lower',
+	      'mean',
+	      'sex_id',
+	      'upper',
+	      'year'
+	    ].forEach(function (name) {
+	      clean[name] = +d[name];
+	    });
 	    return clean;
 	  });
 	}
 
-	function filterData (data, ageGroup) {
+	function filterData (data) {
 	  return data.filter(function (d) {
 	    return d.metric === 'overweight'
 	      && d.measure === 'prevalence'
-	      && d.sex_id === '3'
-	      && d.age_group_id === ageGroup
-	      && /^R[0-9]{1,2}$/.exec(d.location);
+	      && d.sex_id === 3
+	      && REGION_RE.exec(d.location);
 	  });
 	}
 
-	function buildVisualization (data, book, locs) {
-	  var height = 300;
-	  var width = 960;
-	  var padding = 30;
-	  var yearStart = 1990;
-	  var yearEnd = 2013;
+	function buildVisualization (data, locs) {
+	  var height = 450;
+	  var width = 900;
+	  var margin = {
+	    top: 30,
+	    right: 30,
+	    bottom: 30,
+	    left: 30
+	  };
+	  var pct = d3.format('%');
 
-	  var stack = d3.layout.stack()
-	    .values(function (d) {
-	      return d.values;
-	    })
-	    .x(function (d) {
-	      return d.year;
-	    })
-	    .y(function (d) {
-	      return d.mean;
+	  var nestedData = d3.nest()
+	    .key(function (d) { return d.year; })
+	    .key(function (d) { return d.age_group_id; })
+	    .map(data, d3.map);
+
+	  nestedData.forEach(function (year, ages) {
+	    ages.forEach(function (age, d) {
+	      var y0 = 0;
+	      var regions = d.map(function (r) {
+	        return {
+	          location: r.location,
+	          location_name: r.location_name,
+	          mean: r.mean,
+	          year: year,
+	          y0: y0,
+	          y1: y0 += r.mean,
+	          age_group: r.age_group
+	        };
+	      });
+	      var out = {
+	        year: year,
+	        regions: regions,
+	        total: regions[regions.length - 1].y1
+	      };
+	      this.set(age, out);
 	    });
+	  });
 
-	  var nestData = d3.nest()
-	    .key(function (d) {
-	      return d.location;
-	    });
-	  var adults = stack(nestData.entries(filterData(data, '38')));
-	  var kids = stack(nestData.entries(filterData(data, '36')));
+	  var x = d3.scale.ordinal()
+	    .domain(nestedData.keys())
+	    .rangeRoundBands([0, width], .1);
 
-	  var x = d3.scale.linear()
-	    .domain([yearStart, yearEnd])
-	    .range([padding, width - padding]);
 	  var y = d3.scale.linear()
-	    .domain([0, d3.max(adults.concat(kids), function (layer) {
-	      return d3.max(layer.values, function (d) {
-	        return d.y + d.y0;
+	    .domain([0, d3.max(nestedData.values(), function (d) {
+	      return d3.max(d.values(), function (c) {
+	        return c.total;
 	      });
 	    })])
-	    .range([height, 0]);
-	  var color = d3.scale.linear()
-	    .range(['#099', '#bee']);
+	    .rangeRound([height, 0]);
 
-	  var area = d3.svg.area()
-	    .x(function (d) {
-	      return x(d.year);
-	    })
-	    .y0(function (d) {
-	      return y(d.y0);
-	    })
-	    .y1(function (d) {
-	      return y(d.y0 + d.y);
-	    });
+	  var color = d3.scale.category20()
+	    .domain(
+	      locs.filter(function (d) {
+	        return REGION_RE.exec(d.location);
+	      })
+	      .map(function (d) {
+	        return d.location;
+	      })
+	    );
 
 	  var container = d3.select('#obesity-visualization');
 
 	  var viz = container.append('svg')
-	    .attr('height', height + padding)
-	    .attr('width', width + padding);
+	    .attr('height', height + margin.top + margin.bottom)
+	    .attr('width', width + margin.left + margin.right)
+	    .append('g')
+	      .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
-	  var tooltip = container.append('div')
-	    .attr('class', 'visualization-tooltip')
-	    .style('opacity', '0');
+	  var year = viz.selectAll('.year')
+	      .data(nestedData.entries(), function (year) {
+	        return year.key;
+	      })
+	    .enter().append('g')
+	      .attr('class', 'year')
+	      .attr('transform', function (d) {
+	        return 'translate(' + (margin.left + x(d.key)) + ',0)';
+	      });
 
-	  var select = d3.select('.visualization-action')
-	    .on('change', function () {
-	      var option = this['visualization-action-selection'].value;
-	      viz.selectAll('path')
-	        .data(function () {
-	          return option === '0' ? adults : kids;
-	        })
-	        .transition()
-	          .duration(2000)
-	          .attr('d', function (d) {
-	            return area(d.values);
-	          });
-	    });
-
-	  var path = viz.append('g')
-	    .selectAll('path')
-	      .data(adults)
-	    .enter().append('path')
-	      .attr('d', function (d) {
-	        return area(d.values);
+	  var region = year.selectAll('.region')
+	      .data(function (year) {
+	        return year.value.get('38').regions;
+	      })
+	    .enter().append('rect')
+	      .attr('class', 'region')
+	      .attr('width', x.rangeBand())
+	      .attr('y', function (d) {
+	        return y(d.y1);
+	      })
+	      .attr('height', function (d) {
+	        return y(d.y0) - y(d.y1);
 	      })
 	      .style('fill', function (d) {
-	        return color(Math.random());
+	        return color(d.location);
 	      })
 	      .on('mouseover', function (d, i) {
 	        tooltip.style('opacity', 1);
 	      })
 	      .on('mousemove', function (d, i) {
-	        var datum = d.values[i];
-	        tooltip.text(datum.location_name)
+	        tooltip.text([
+	          d.location_name,
+	          d.age_group,
+	          d.year,
+	          pct(d.mean)
+	        ].join(', '))
 	          .style('top', (d3.event.pageY + 3) + 'px')
 	          .style('left', (d3.event.pageX + 3) + 'px');
 	      })
@@ -175,25 +203,62 @@
 	  var xAxis = d3.svg.axis()
 	    .scale(x)
 	    .orient('bottom')
-	    .ticks(yearEnd - yearStart)
 	    .tickFormat(d3.format('d'));
 
 	  viz.append('g')
 	    .attr('class', 'visualization-axis')
-	    .attr('transform', 'translate(0,' + height + ')')
+	    .attr('transform', 'translate(' + margin.left + ',' + height + ')')
 	    .call(xAxis);
+
+	  var tooltip = container.append('div')
+	    .attr('class', 'visualization-tooltip')
+	    .style('opacity', '0');
+
+	  var select = d3.select('.visualization-action')
+	    .on('change', function () {
+	      var option = this['visualization-action-selection'].value;
+
+	      region = d3.selectAll('.year')
+	        .selectAll('.region')
+	          .data(function (year) {
+	            // option === '38' || option === '36'
+	            return year.value.get(option).regions;
+	          });
+
+	      region.enter().append('rect')
+	          .attr('class', 'region')
+	          .attr('width', x.rangeBand())
+	          .attr('y', function (d) {
+	            return height;
+	          })
+	          .attr('height', function (d) {
+	            return 0;
+	          })
+	          .style('fill', function (d) {
+	            return color(d.location);
+	          });
+
+	      region.exit().remove();
+
+	      region.transition()
+	          .duration(500)
+	          .attr('y', function (d) {
+	            return y(d.y1);
+	          })
+	          .attr('height', function (d) {
+	            return y(d.y0) - y(d.y1);
+	          });
+	    });
 	}
 
 	window.addEventListener('DOMContentLoaded', function () {
 	  q.all([
-	    loadData(('/experiments/ihme/data') + '/obesity-data.csv'),
-	    loadData(('/experiments/ihme/data') + '/obesity-code-book.csv'),
-	    loadData(('/experiments/ihme/data') + '/location-code-book.csv')
+	    loadData('data/obesity-data.csv'),
+	    loadData('data/location-code-book.csv')
 	  ]).done(function (values) {
 	    buildVisualization(
-	      cleanData(values[0]),
-	      values[1],
-	      d3.map(values[2], function (d) { return d.location; })
+	      filterData(cleanData(values[0])),
+	      values[1]
 	    );
 	  });
 	});
